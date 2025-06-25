@@ -1,74 +1,40 @@
 from flask import Flask, render_template, request, redirect, request, jsonify
+from database import init_db, insert_example, get_bugs, add_bug
 
 import sqlite3
 import os
 
 app = Flask(__name__)
 
-BUG_FILE = 'bugs.db'
+@app.route('/')
+def index():
+    return render_template('index.html')
 
-def init_dbs():
-    conn = sqlite3.connect(BUG_FILE)
-    c = conn.cursor()
+# returns json file from dictionary of bugs (might change?)
+@app.route('/api/bugs',methods=['GET'])
+def api_get_bugs():
+    bugs = get_bugs()
+    return jsonify(bugs)
 
-    c.execute(
-        '''
-        CREATE TABLE IF NOT EXISTS projects (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title VARCHAR(25) NOT NULL,
-            description VARCHAR(255)
+# adds bug calling add_bug. adds the default '', Open and Medium if left null.
+@app.route('/api/bugs',methods=['POST'])
+def api_add_bug():
+    # bug_key = add_bug(b_title,b_desc,b_status,b_sever)
+    bug = request.json
+    try:
+        bug_id = add_bug(
+        title = bug['title'],
+        description= bug.get('description',''),
+        status= bug.get('status','Open'),
+        severity= bug.get('severity','Medium')
         )
-        '''
-    )
-    # then populate the projects
 
-    c.execute(
-        '''
-        CREATE TABLE IF NOT EXISTS tags (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            tag VARCHAR(15) NOT NULL UNIQUE
-        )
-        '''
-    )
-    # then populate the tags
+        return jsonify({'status': 'success', 'bug_id': bug_id})
     
-    c.execute(
-        '''
-        CREATE TABLE IF NOT EXISTS bugs (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title VARCHAR(100) NOT NULL,
-            description VARCHAR(255) NOT NULL,
-            status TEXT DEFAULT 'Open',
-            severity TEXT NOT NULL,
-            solution VARCHAR(100),
-            created DATE
-        )
-        '''
-    )
-
-#table relation for bugs and their tags
-    c.execute(
-        '''
-        CREATE TABLE IF NOT EXISTS bugs_tags (
-            bug_id INTEGER NOT NULL REFERENCES bugs(id),
-            tag_id INTEGER NOT NULL REFERENCES tags(id)
-            PRIMARY KEY (bug_id, tag_id)
-
-        )
-        '''
-    )
-
-# table for bugs and project associated if there is any
-    c.execute(
-        '''
-        CREATE TABLE IF NOT EXISTS project_bugs (
-            bug_id INTEGER NOT NULL REFERENCES bugs(id),
-            project_id INTEGER NOT NULL REFERENCES projects(id)
-            PRIMARY KEY (bug_id, project_id)
-        )
-        '''
-    )
-
-    conn.commit()
-    conn.close()
-
+    except Exception as e:
+        print(f"Unexpected Error occured: {e}")
+    
+    
+if __name__ == '__main__':
+    init_db()
+    app.run(debug=True)
