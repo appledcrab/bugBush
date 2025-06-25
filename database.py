@@ -3,7 +3,8 @@
 # all the information/functions relating to sqlite 
 
 import sqlite3
-import os
+# import os
+from typing import List, Dict, Optional
 
 DB_FILE = 'bugs.db'
 
@@ -43,6 +44,8 @@ def insert_example():
 
 def init_db():
     conn = get_db_connection()
+    # enables foreign key constraints that are for some reason disabled by default
+    conn.execute("PRAGMA foreign_keys = ON")
     c = conn.cursor()
 
     # Create tables
@@ -89,18 +92,45 @@ def init_db():
         )
     ''')
 
+    insert_example()
+
     conn.commit()
     conn.close()
 
-# Selects all the bugs from bugs table
-# => returns a dictionary of them
-def get_bugs():
+# Selects a single bug from the table given an ID
+# => returns a dictionary of the the specific bug
+def get_bug(bug_id: int) -> Optional[Dict] :
     conn = get_db_connection()
-    c = conn.cursor()
-    c.execute("SELECT id, title, description, status, severity, created FROM bugs")
-    bugs = [dict(id=row[0], title=row[1], description=row[2], status=row[3], severity=row[4], created=row[5]) for row in c.fetchall()]
-    conn.close()
-    return bugs
+    try:
+        conn.row_factory=sqlite3.Row # this would allow for easier/readable testing as it will be structured like the table itself.
+        c = conn.cursor()
+        c.execute("SELECT * FROM bugs WHERE id = ?",(bug_id,))
+        row = c.fetchone()
+        return dict(row) if row else None
+    finally:
+        conn.close()
+    
+# Returns all bugs 
+# => returns dictionary of all of the bugs
+def get_all_bugs() -> List[Dict] :
+    conn = get_db_connection()
+    try:
+        conn.row_factory=sqlite3.Row
+        c = conn.cursor()
+        c.execute("SELECT * FROM bugs")
+        rows = c.fetchall()
+        # prev issue: dict(rows) would try to turn entire rows into a dict instead of
+        # each row into a dict like we want
+        return [dict(row) for row in rows ]if rows else None
+    finally:
+        conn.close()
+
+
+
+
+# Returns all bugs with specific filters (Project, tags, Open,etc)
+
+
 
 # Given title, descr, status, and severity, adds bug to the table 
 #  => returns lastrowid / primary key
@@ -108,11 +138,33 @@ def get_bugs():
 # will need to go into more detail of adding a connected project, adding more tags, and possibly
 # add a solution to it at addition if it was a past bug
 # would then also need to then to add an edit 
-def add_bug(title, description, status, severity):
+def add_bug(title: str, description: str, status = 'Open', severity= 'Medium') -> int:
     conn = get_db_connection()
-    c = conn.cursor()
-    c.execute("INSERT INTO bugs (title, description, status, severity, created) VALUES (?, ?, ?, ?, date('now'))",
-              (title, description, status, severity))
-    conn.commit()
-    conn.close()
-    return c.lastrowid
+    try:
+        c = conn.cursor()
+        c.execute("INSERT INTO bugs (title, description, status, severity, created) VALUES (?, ?, ?, ?, date('now'))",
+                (title, description, status, severity))
+        conn.commit()
+        return c.lastrowid
+    finally:
+        conn.close()
+
+
+# Mostly for testing purposes
+def delete_all_bugs():
+    conn = get_db_connection()
+    try:
+        c = conn.cursor()
+        c.execute("DELETE FROM bugs")
+        conn.commit()
+    finally:
+        conn.close()
+
+def delete_bug(bug_id: int):
+    conn = get_db_connection()
+    try:
+        c = conn.cursor()
+        c.execute("DELETE FROM bugs WHERE id = ?",(bug_id,))
+        conn.commit()
+    finally:
+        conn.close()
