@@ -1,0 +1,8 @@
+#bug-form{
+    width: 25%;  
+    background-color: rgb(124, 155, 121);
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
