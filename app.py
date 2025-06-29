@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, redirect, request, jsonify
-from database import init_db, insert_example, get_bugs, add_bug
+from database import init_db,get_all_bugs, add_bug
+
+
 
 import sqlite3
 import os
@@ -13,7 +15,7 @@ def index():
 # returns json file from dictionary of bugs (might change?)
 @app.route('/api/bugs',methods=['GET'])
 def api_get_bugs():
-    bugs = get_bugs()
+    bugs = get_all_bugs()
     return jsonify(bugs)
 
 # adds bug calling add_bug. adds the default '', Open and Medium if left null.
