@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bug Bush</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div id="content">
+    <div id="content-items">
+      <h1>🌿🐞 Bug Bush 🐞🌿</h1>
+
+      <form id="bug-form">
+        <input type="text" id="title" placeholder="Bug title" required />
+        <textarea id="description" rows="4" placeholder="Bug description"></textarea>
+        
+        <fieldset>
+          <legend>Severity of Bug:</legend>
+          <div class="severity-group">
+            <label><input class="radio" type="radio" name="severity" value="low" /> Low</label>
+            <label><input class="radio" type="radio" name="severity" value="medium" checked /> Medium</label>
+            <label><input class="radio" type="radio" name="severity" value="high" /> High</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Status of Bug:</legend>
+          <div class="status-group">
+            <label><input type="radio" name="status" value="open" checked /> Open</label>
+            <label><input type="radio" name="status" value="closed" /> Closed</label>
+          </div>
+        </fieldset>
+
+        <button type="submit">Add Bug</button>
+      </form>
+    </div>
+
+    <div id="content-items">
+      <ul id="bug-list"></ul>
+    </div>
+  </div>
+
+  <script src="/static/script.js"></script>
+</body>
+</html>

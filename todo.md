@@ -10,7 +10,10 @@
     - [ ] Test(+add) Update, Delete
 
 #### Overall UI
-
-- [ ] Creating inital ui with python flask
-    - [ ] Creating base layout showing bugs and very simple button that works on adding bug
+- [X] Creating inital ui with python flask
+    - [X] Creating base layout showing bugs and very simple button that works on adding bug
+    - [ ] Changing bug input to add tags, project, and solution if it is a closed bug(ui and sqlite)
+- [ ] Making a more interactive bug garden that isnt just a list of bugs
+    - [ ] Filtering bugs in a list but also able to show bugs as visual bug emojis(?) in different bushes and hover over to show what bug that is
+        - [ ] hopefully grouping bugs around similarity by filter (ex. project, tags); The bugs in the same bush more similar?
 
