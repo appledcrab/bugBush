@@ -2,10 +2,11 @@
 
 const form = document.getElementById('bug-form')
 
-
 // on change for the closed checkbox
 const status_radios = document.querySelectorAll(".status");
 const solution_fieldset = document.querySelector('.optional_solution');
+
+
 
 // the function updates the solution fieldset visibility changes
 function updateSolutionVisibility() {
@@ -18,8 +19,43 @@ status_radios.forEach(radio => {
     radio.addEventListener('change', updateSolutionVisibility);
 });
 
-// Check initial state on page load
+// updating on load
 updateSolutionVisibility();
+
+// ---------------
+// doing the bug tags. but its vanilla.
+tags = [];
+const addTagBtn = document.querySelector(".tag-btn");
+
+addTagBtn.addEventListener('click', () =>{
+    // on click, adding the tag in the input to the tags section 
+    const tagsSection = document.getElementById("tags-section");
+    const tagText = document.getElementById("tag-text");
+    // console.log()
+    const text = tagText.value.trim()
+    if (text !== '' && !tags.includes(text)){
+        const newTag = document.createElement('p');
+        
+        newTag.classList.add("tag")
+        tags.push(text)
+        newTag.innerText = text;
+        newTag.addEventListener('click', () =>{
+            // removing it from the list and from the document
+            newTag.remove();
+            tags.splice(tags.indexOf(newTag.innerText));
+        })
+
+        // now add it to the document
+        tagsSection.appendChild(newTag);
+        
+
+
+    }else{
+        alert("Please enter unique text for the tag.")
+    }
+    tagText.value='';
+    // console.log(tags) //testing for printing the tags array
+})
 
 
 // random bug being added before each bug 
@@ -47,14 +83,14 @@ async function loadBugs() {
 // on submitting a bug with the form, adding it to the db
 
 form.addEventListener('submit', async (e) => {
-    // e.preventDefault(); 
+
     
     const title = document.getElementById('title').value; 
     const description = document.getElementById('description').value;
     const severLvl = document.querySelector('input[name="severity"]:checked').value; 
     const status = document.querySelector('input[name="status"]:checked').value; 
     
-    // console.log({ title, description, severLvl, status }); 
+   
 
     try {
         const response = await fetch('/api/bugs', {

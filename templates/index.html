@@ -15,6 +15,20 @@
           <legend>Bug name:</legend>
           <input type="text" id="title" placeholder="ex. Money double added" required />
         </fieldset>
+        <!-- tags -->
+
+        <fieldset>
+          <legend>Tags:</legend>
+          <div class="section">
+            <input id="tag-text" class="section-item" type="text" placeholder="ex. Java" autocomplete="off" />
+            <button class="section-item tag-btn">Add tag</button>
+          </div>
+         <div id="tags-section">
+            
+         </div>
+        </fieldset>
+
+
         <fieldset>
           <legend>Bug Description:</legend>
           <textarea id="description" rows="4" placeholder="ex. When depositing using the mobile app, double the money is shown in the bank account. "></textarea>
@@ -40,7 +54,7 @@
         <fieldset class="optional_solution" style="display:none">
           <legend>Solution:</legend>
           <div >
-             <textarea id="solution" rows="4" placeholder="ex. Variable added to the account in two different spots"></textarea>
+             <textarea id="solution" rows="4" placeholder="ex. Variable added to the account in two different spots. Corrected the code to only add in one spot."></textarea>
           </div>
         </fieldset>
 

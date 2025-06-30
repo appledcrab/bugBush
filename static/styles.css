@@ -29,6 +29,15 @@ h1 {
   min-width: 320px;
   max-width: 600px;
 }
+.section{
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+.section-item{
+  flex:1;
+}
 
 #bug-form {
   background-color: #bcd4b2;
@@ -102,4 +111,22 @@ h1 {
   margin-bottom: 1rem;
   padding: 1rem;
   border-radius: 8px;
+}
+
+#tags-section{
+   margin:20px 5px;
+   display: flex;
+   flex-wrap: wrap;
+}
+.tag{
+  background-color: #ffffff;
+  border: 1px solid #c8dec2;
+  margin: 5px 0px 5px 5px;
+  padding: .5rem;
+  border-radius: 8px;
+}
+
+.tag:hover{
+  background-color: #ebabab;
+  cursor:pointer;
 }
