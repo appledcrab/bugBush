@@ -28,14 +28,17 @@ def api_add_bug():
         title = bug['title'],
         description= bug.get('description',''),
         status= bug.get('status','Open'),
-        severity= bug.get('severity','Medium')
+        severity= bug.get('severity','Medium'),
+        solution= bug.get('solution','')
         )
 
         return jsonify({'status': 'success', 'bug_id': bug_id})
     
     except Exception as e:
         print(f"Unexpected Error occured: {e}")
-    
+
+
+
     
 if __name__ == '__main__':
     init_db()

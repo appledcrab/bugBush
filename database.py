@@ -135,15 +135,14 @@ def get_all_bugs() -> List[Dict] :
 # Given title, descr, status, and severity, adds bug to the table 
 #  => returns lastrowid / primary key
 
-# will need to go into more detail of adding a connected project, adding more tags, and possibly
-# add a solution to it at addition if it was a past bug
+# will need to go into more detail of adding a connected project, adding more tags
 # would then also need to then to add an edit 
-def add_bug(title: str, description: str, status = 'Open', severity= 'Medium') -> int:
+def add_bug(title: str, description: str, solution: str, status='Open', severity='Medium') -> int:
     conn = get_db_connection()
     try:
         c = conn.cursor()
-        c.execute("INSERT INTO bugs (title, description, status, severity, created) VALUES (?, ?, ?, ?, date('now'))",
-                (title, description, status, severity))
+        c.execute("INSERT INTO bugs (title, description, status, severity, solution, created) VALUES (?, ?, ?, ?, ?, date('now'))",
+                (title, description, status, severity, solution))
         conn.commit()
         return c.lastrowid
     finally:

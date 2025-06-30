@@ -10,7 +10,7 @@ const solution_fieldset = document.querySelector('.optional_solution');
 
 // the function updates the solution fieldset visibility changes
 function updateSolutionVisibility() {
-    const checked = document.querySelector('input[name="status"][value="closed"]:checked');
+    const checked = document.querySelector('input[name="status"][value="Closed"]:checked');
     // console.log(checked);
     solution_fieldset.style.display = checked ? 'block' : 'none';
 }
@@ -75,7 +75,12 @@ async function loadBugs() {
     list.innerHTML = '';
     bugs.forEach(bug => {
         const li = document.createElement('li');
-        li.textContent = `${randBug()} ${bug.title} - ${bug.description} (${bug.status}, ${bug.severity})`;
+        li.innerHTML = `
+        <h2>${randBug()} ${bug.title} </h2> (${bug.status}, ${bug.severity})
+        <h4>Description</h4>
+        <p>${bug.description}</p> 
+        <h4>Solution</h4>
+        <p>${bug.solution}</p>`;
         list.appendChild(li);
     });
 }
@@ -89,6 +94,7 @@ form.addEventListener('submit', async (e) => {
     const description = document.getElementById('description').value;
     const severLvl = document.querySelector('input[name="severity"]:checked').value; 
     const status = document.querySelector('input[name="status"]:checked').value; 
+    const solution = document.getElementById('solution').value;
     
    
 
@@ -100,7 +106,8 @@ form.addEventListener('submit', async (e) => {
                 title, 
                 description,
                 severity: severLvl, 
-                status
+                status,
+                solution
             })
         });
 
@@ -109,6 +116,7 @@ form.addEventListener('submit', async (e) => {
         }
 
         const result = await response.json();
+        // result will have the bug id which can be used to add tags tied to this bug in the tags table (make seperate function)
         console.log('Success:', result);
         loadBugs(); 
         
