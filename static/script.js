@@ -3,6 +3,15 @@
 const form = document.getElementById('bug-form')
 
 // loadings bugs from the sqlite and putting it on a basic list in html
+
+function randBug(){
+    bugSelection = ['🐝','🐞','🐛','🐜','🪱'];
+    const randNum = Math.floor(Math.random()* bugSelection.length);
+    // console.log(randNum);
+    return bugSelection[randNum];
+}
+
+
 async function loadBugs() {
     const res = await fetch('/api/bugs')
     const bugs = await res.json();
@@ -11,7 +20,7 @@ async function loadBugs() {
     list.innerHTML = '';
     bugs.forEach(bug => {
         const li = document.createElement('li');
-        li.textContent = `${bug.title} - ${bug.description} (${bug.status}, ${bug.severity})`;
+        li.textContent = `${randBug()} ${bug.title} - ${bug.description} (${bug.status}, ${bug.severity})`;
         list.appendChild(li);
     });
 }
