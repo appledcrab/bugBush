@@ -2,8 +2,27 @@
 
 const form = document.getElementById('bug-form')
 
-// loadings bugs from the sqlite and putting it on a basic list in html
 
+// on change for the closed checkbox
+const status_radios = document.querySelectorAll(".status");
+const solution_fieldset = document.querySelector('.optional_solution');
+
+// the function updates the solution fieldset visibility changes
+function updateSolutionVisibility() {
+    const checked = document.querySelector('input[name="status"][value="closed"]:checked');
+    // console.log(checked);
+    solution_fieldset.style.display = checked ? 'block' : 'none';
+}
+
+status_radios.forEach(radio => {
+    radio.addEventListener('change', updateSolutionVisibility);
+});
+
+// Check initial state on page load
+updateSolutionVisibility();
+
+
+// random bug being added before each bug 
 function randBug(){
     bugSelection = ['🐝','🐞','🐛','🐜','🪱'];
     const randNum = Math.floor(Math.random()* bugSelection.length);
@@ -11,7 +30,7 @@ function randBug(){
     return bugSelection[randNum];
 }
 
-
+// loadings bugs from the sqlite and putting it on a basic list in html
 async function loadBugs() {
     const res = await fetch('/api/bugs')
     const bugs = await res.json();
@@ -61,6 +80,11 @@ form.addEventListener('submit', async (e) => {
         console.error('Fetch error:', error);
         alert('Failed to submit bug. See console for details.');
     }
+
+    title.value = '';
+    description.value = '';
+
+
 });
 loadBugs();
 

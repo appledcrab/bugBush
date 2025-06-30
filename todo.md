@@ -8,6 +8,7 @@
 - [ ] Testing basic CRUD of bugs 
     - [x] Test Create, Read
     - [ ] Test(+add) Update, Delete
+- [ ] Possibly adding bug to have permanent specific bug emoji to go along with it (maybe even to be chosen...?)
 
 #### Overall UI
 - [X] Creating inital ui with python flask
