@@ -137,7 +137,7 @@ def get_all_bugs() -> List[Dict] :
 
 # will need to go into more detail of adding a connected project, adding more tags
 # would then also need to then to add an edit 
-def add_bug(title: str, description: str, solution: str, status='Open', severity='Medium') -> int:
+def add_bug(title: str, description: str, solution = '', status='Open', severity='Medium') -> int:
     conn = get_db_connection()
     try:
         c = conn.cursor()
@@ -148,14 +148,21 @@ def add_bug(title: str, description: str, solution: str, status='Open', severity
     finally:
         conn.close()
 
-
-# Mostly for testing purposes
-def delete_all_bugs():
+def update_bug(bug_id: int, title: str, description: str, solution: str = '', status: str = 'Open', severity: str = 'Medium') -> bool:
     conn = get_db_connection()
     try:
         c = conn.cursor()
-        c.execute("DELETE FROM bugs")
+        c.execute(
+            "UPDATE bugs "
+            "SET title = ?, description = ?, solution = ?, status = ?, severity = ? "
+            "WHERE id = ?",
+            (title, description, solution, status, severity, bug_id)
+        )
         conn.commit()
+        return True 
+    except sqlite3.Error as e:
+        print(f"Database Error: {e}")
+        return False  
     finally:
         conn.close()
 
@@ -167,3 +174,14 @@ def delete_bug(bug_id: int):
         conn.commit()
     finally:
         conn.close()
+
+# Mostly for testing purposes but can be kept as a reset
+def delete_all_bugs():
+    conn = get_db_connection()
+    try:
+        c = conn.cursor()
+        c.execute("DELETE FROM bugs")
+        conn.commit()
+    finally:
+        conn.close()
+

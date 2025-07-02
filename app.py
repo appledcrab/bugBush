@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, request, jsonify
-from database import init_db,get_all_bugs, add_bug
+from database import init_db,get_all_bugs, add_bug, update_bug, delete_bug
 
 
 
@@ -32,11 +32,39 @@ def api_add_bug():
         solution= bug.get('solution','')
         )
 
-        return jsonify({'status': 'success', 'bug_id': bug_id})
+        return jsonify({'status': 'success add', 'bug_id': bug_id})
     
     except Exception as e:
         print(f"Unexpected Error occured: {e}")
 
+# upadting bug given its bugID
+@app.route('/api/bugs/<int:bug_id>', methods=['PUT'])
+def api_update_bug(bug_id):
+    bug_update = request.json
+    try:
+        bug_id = update_bug(
+            bug_id=bug_id,
+            title = bug_update['title'],
+            description= bug_update.get('description',''),
+            status= bug_update.get('status','Open'),
+            severity= bug_update.get('severity','Medium'),
+            solution= bug_update.get('solution','')
+        )
+
+        return jsonify({'status': 'success update', 'bug_id': bug_id})
+
+    except Exception as e:
+        print(f"Unexpected Error occured: {e}")
+
+@app.route('/api/bugs/<int:bug_id>', methods=['DELETE'])
+def api_delete_bug(bug_id):
+    try:
+        pass
+        delete_bug(
+            bug_id=bug_id
+        )
+    except Exception as e:
+        print(f"Unexpected Error occured: {e}")
 
 
     

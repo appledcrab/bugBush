@@ -1,7 +1,7 @@
 # test_database.py
 import sqlite3
 import pytest
-from database import init_db, add_bug, get_all_bugs, get_bug, delete_all_bugs
+from database import init_db, add_bug, get_all_bugs, get_bug, delete_all_bugs , delete_bug, update_bug
 
 @pytest.fixture
 def setup_db():
@@ -54,3 +54,42 @@ def test_add_multiple_bugs(setup_db):
     bugs = get_all_bugs()
     assert len(bugs) == 3
     assert {bug['title'] for bug in bugs} == {"Bug 1", "Bug 2", "Bug 3"}
+
+def test_update_bug(setup_db):
+    add_bug("Bug 1", "First bug")
+    bug2_id = add_bug("Bug 2", "Second bug")
+
+    
+    success = update_bug(
+        bug_id=bug2_id, 
+        title="Bug Number Two", 
+        description="Updated description"
+    )
+    # update bug will be used on editing. There won't be a chance that we will only be getting a title or desc for update.
+    
+    
+    assert success, "Update failed..."
+
+    bugs = get_all_bugs()
+    assert {bug['title'] for bug in bugs} == {"Bug 1", "Bug Number Two"}
+
+
+def test_delete_bug(setup_db):
+    add_bug("Bug 1", "First bug")
+    add_bug("Bug 2", "Second bug")
+    bug3 = add_bug("Bug 3", "Third bug")
+
+    bugs = get_all_bugs()
+    assert len(bugs) == 3
+
+    delete_bug(bug3)
+
+    bugs = get_all_bugs()
+    assert len(bugs) == 2
+
+
+
+    
+
+
+

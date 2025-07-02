@@ -67,22 +67,55 @@ function randBug(){
 }
 
 // loadings bugs from the sqlite and putting it on a basic list in html
+const list = document.getElementById('bug-list');
+
 async function loadBugs() {
     const res = await fetch('/api/bugs')
     const bugs = await res.json();
-    const list = document.getElementById('bug-list');
     console.log(bugs)
     list.innerHTML = '';
     bugs.forEach(bug => {
         const li = document.createElement('li');
         li.innerHTML = `
         <h2>${randBug()} ${bug.title} </h2> (${bug.status}, ${bug.severity})
-        <h4>Description</h4>
-        <p>${bug.description}</p> 
-        <h4>Solution</h4>
-        <p>${bug.solution}</p>`;
+        <button class="edit-btn" data-id="${bug.id}">Edit</button>
+        <div class="bug-details"> 
+            <h4>Description</h4>
+            <p>${bug.description}</p> 
+            <h4>Solution</h4>
+            <p>${bug.solution || "Not resolved yet"}</p>
+        </div>`;
+        
+
         list.appendChild(li);
     });
+}
+list.addEventListener('click', (e) => {
+  if (e.target.classList.contains('edit-btn')) {
+    const bugId = e.target.dataset.id;
+    console.log(bugId)
+    const bugItem = e.target.closest('li');
+    toggleEditMode(bugItem, bugId);
+  }
+});
+
+function toggleEditMode(bugItem, bugId) {
+  // Replace static text with input fields
+  const bugDetails = bugItem.querySelector('.bug-details');
+  bugDetails.innerHTML = `
+    <form class="edit-form" data-id="${bugId}">
+      <label>Title: <input type="text" name="title" value="${bugItem.querySelector('h2').textContent}"></label>
+      <label>Status: 
+        <select name="status">
+          <option value="open">Open</option>
+          <option value="closed">Closed</option>
+        </select>
+      </label>
+      <label>Description: <textarea name="description">${bugItem.querySelector('p:nth-of-type(1)').textContent}</textarea></label>
+      <label>Solution: <textarea name="solution">${bugItem.querySelector('p:nth-of-type(2)').textContent}</textarea></label>
+      <button type="submit">Save</button>
+    </form>
+  `;
 }
 
 // on submitting a bug with the form, adding it to the db
