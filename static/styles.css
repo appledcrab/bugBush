@@ -2,7 +2,9 @@
     --main-dark-green: #3a6845;
 }
 
-
+.edit_title{
+  font-size: 1.5em;
+}
 
 body {
   font-family: 'Segoe UI', sans-serif;
@@ -39,7 +41,9 @@ h1 {
   flex:1;
 }
 
-#bug-form {
+/* Target both the main form and edit forms */
+#bug-form, 
+.bug-form {
   background-color: #bcd4b2;
   padding: 1.5rem;
   border-radius: 12px;
@@ -49,8 +53,11 @@ h1 {
   gap: 1rem;
 }
 
+/* Apply to inputs in both forms */
 #bug-form input[type="text"],
-#bug-form textarea {
+#bug-form textarea,
+.bug-form input[type="text"],
+.bug-form textarea {
   width: 95%;
   padding: 0.6rem;
   border: 2px solid var(--main-dark-green);
@@ -59,7 +66,9 @@ h1 {
   font-family: 'Segoe UI', sans-serif;
 }
 
-#bug-form fieldset {
+/* Style fieldsets in both forms */
+#bug-form fieldset,
+.bug-form fieldset {
   border: 2px solid var(--main-dark-green);
   border-radius: 8px;
   padding: 1rem;

@@ -25,6 +25,7 @@
             - [ ] Shown added to list 
         - [ ]project
         - [X]solution if it is a closed bug
+        - [X] Editing the bug through UI
 
 
 
