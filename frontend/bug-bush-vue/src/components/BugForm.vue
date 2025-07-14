@@ -1,33 +1,33 @@
-<template>
-  <h1 class="text-dark text-3xl font-bold" > 🐞 Add Bug 🐞</h1>
-  <div class=" flex flex-row justify-center p-4 ">
+<template >
+  <h1 class="text-dark text-3xl font-bold" > Add Bug </h1>
+  <div class="flex flex-row justify-center p-4 ">
     
-    <form @submit.prevent="submitBug" class="bg-light p-4 rounded-md shadow mb-6 flex flex-col gap-4 w-full min-w-sm max-w-4xl border-3 border-dashed border-dark">
+    <form @submit.prevent="submitBug" class="z-1 bg-light p-4 rounded-md shadow mb-6 flex flex-col gap-4 w-full min-w-sm max-w-4xl border-3 border-dashed border-dark">
       <legend class="font-semibold text-dark">Select Bug Emoji:</legend>
         <div class="flex p-4 flex-row gap-10 justify-center text-3xl border border-primary rounded">
-        <label class="cursor-pointer flex flex-col items-center">
+        <label class="emoji-option cursor-pointer flex flex-col items-center">
           <input type="radio" name="test" value="bug" class="hidden peer" />
-          <p class="transition peer-checked:border rounded p-1 peer-checked:scale-175 peer-checked:border-dark">🐛</p>
+          <p>🐛</p>
         </label>
 
-        <label class="cursor-pointer flex flex-col items-center">
+        <label class="emoji-option cursor-pointer flex flex-col items-center">
           <input type="radio" name="test" value="ant" class="hidden peer" />
-          <p class="transition peer-checked:border rounded p-1 peer-checked:scale-175 peer-checked:border-dark">🐜</p>
+          <p>🐜</p>
         </label>
 
-        <label class="cursor-pointer flex flex-col items-center">
+        <label class="emoji-option cursor-pointer flex flex-col items-center">
           <input type="radio" name="test" value="worm" class="hidden peer" />
-          <p class="transition peer-checked:border rounded p-1 peer-checked:scale-175 peer-checked:border-dark">🪱</p>
+          <p>🪱</p>
         </label>
 
-        <label class="cursor-pointer flex flex-col items-center">
+        <label class="emoji-option cursor-pointer flex flex-col items-center">
           <input type="radio" name="test" value="ladybug" class="hidden peer" />
-          <p class="transition peer-checked:border rounded p-1 peer-checked:scale-175 peer-checked:border-dark">🐞</p>
+          <p>🐞</p>
         </label>
 
-        <label class="cursor-pointer flex flex-col items-center">
+        <label class="emoji-option cursor-pointer flex flex-col items-center">
           <input type="radio" name="test" value="beetle" class="hidden peer" />
-          <p class="transition peer-checked:border rounded p-1 peer-checked:scale-175 peer-checked:border-dark">🪲</p>
+          <p>🪲</p>
         </label>
       </div>
 
@@ -38,17 +38,17 @@
       <textarea v-model="description" rows="4" placeholder="Bug description" class="text-xl p-2 border-dark border border-primary rounded"></textarea>
       
       
-      <legend class="font-semibold text-dark">Severity:</legend>
+      <legend class=" font-semibold text-dark">Severity:</legend>
       <div class="flex p-4 flex-row gap-10 justify-center text-3xl border border-primary rounded">
           
-          <label><input type="radio" value="Low" v-model="severity" class="hidden peer" /> 
-            <p class="transition peer-checked:border rounded p-1 peer-checked:scale-175 peer-checked:border-dark">🟢</p>
+          <label class="emoji-option"><input type="radio" value="Low" v-model="severity" class="hidden peer" /> 
+            <p >🟢</p>
           </label>
-          <label><input type="radio" value="Medium" v-model="severity" class="hidden peer" />
-            <p class="transition peer-checked:border rounded p-1 peer-checked:scale-175 peer-checked:border-dark">🟠</p>
+          <label class="emoji-option"><input type="radio" value="Medium" v-model="severity" class="hidden peer" />
+            <p >🟠</p>
              </label>
-          <label><input type="radio" value="High" v-model="severity" class="hidden peer" />
-            <p class="transition peer-checked:border rounded p-1 peer-checked:scale-175 peer-checked:border-dark">🔴</p>
+          <label class="emoji-option"><input type="radio" value="High" v-model="severity" class="hidden peer" />
+            <p >🔴</p>
             </label>
         </div>
       
@@ -61,6 +61,7 @@
       <button type="submit" class="bg-dark text-white py-2 px-4 rounded hover:bg-green-800 hover:cursor-pointer">Add Bug</button>
     </form>
   </div>
+  <div class="bush-background"></div>
 </template>
 
 <script setup>

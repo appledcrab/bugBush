@@ -17,7 +17,7 @@ onMounted(loadBugs)
 
 <template>
   <Header/>
-  <main class="p-8 bg-green-50 min-h-screen">
+  <main class="p-8 bg-green-50 min-h-screen -z-1">
     
     <BugForm @bug-added="loadBugs"/>
     <BugList :bugs="bugs"/>
