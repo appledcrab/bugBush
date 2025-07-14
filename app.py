@@ -8,9 +8,10 @@ import os
 
 app = Flask(__name__)
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+# @app.route('/')
+# def index():
+#     return render_template('index.html')
+# uneeded now as vue handles that now
 
 # returns json file from dictionary of bugs (might change?)
 @app.route('/api/bugs',methods=['GET'])

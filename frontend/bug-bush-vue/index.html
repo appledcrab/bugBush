@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bug Bush</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div id="app">
+  <div id="content">
+    <div id="content-items">
+      <h1>🌿🐞 Bug Bush 🐞🌿</h1>
+
+      <form id="bug-form">
+        <fieldset>
+          <legend>Bug name:</legend>
+          <input type="text" id="title" placeholder="ex. Money double added" required />
+        </fieldset>
+        <!-- tags -->
+
+        <fieldset>
+          <legend>Tags:</legend>
+          <div class="section">
+            <input id="tag-text" class="section-item" type="text" placeholder="ex. Java" autocomplete="off" />
+            <button type="button" class="section-item tag-btn">Add tag</button>
+          </div>
+         <div id="tags-section">
+            
+         </div>
+        </fieldset>
+
+
+        <fieldset>
+          <legend>Bug Description:</legend>
+          <textarea id="description" rows="4" placeholder="ex. When depositing using the mobile app, double the money is shown in the bank account. "></textarea>
+        </fieldset>
+        
+        <fieldset>
+          <legend>Severity of Bug:</legend>
+          <div class="severity-group">
+            <label><input class="radio" type="radio" name="severity" value="Low" /> Low</label>
+            <label><input class="radio" type="radio" name="severity" value="Medium" checked /> Medium</label>
+            <label><input class="radio" type="radio" name="severity" value="High" /> High</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Status of Bug:</legend>
+          <div class="status-group">
+            <label><input class="status" type="radio" name="status" value="Open" checked /> Open</label>
+            <label><input class="status" type="radio" name="status" value="Closed" /> Closed</label>
+          </div>
+        </fieldset>
+
+        <fieldset class="optional_solution" style="display:none">
+          <legend>Solution:</legend>
+          <div >
+             <textarea id="solution" rows="4" placeholder="ex. Variable added to the account in two different spots. Corrected the code to only add in one spot."></textarea>
+          </div>
+        </fieldset>
+
+        <button type="submit">Add Bug</button>
+      </form>
+    </div>
+
+    <div id="content-items">
+      <ul id="bug-list"></ul>
+    </div>
+  </div>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

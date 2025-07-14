@@ -26,7 +26,8 @@ updateSolutionVisibility(solution_fieldset);
 
 // ---------------
 // doing the bug tags. but its vanilla.
-tags = [];
+tags = []; //tags for new bug
+editTags = [];
 const addTagBtn = document.querySelector(".tag-btn");
 
 addTagBtn.addEventListener('click', () =>{

@@ -40,3 +40,8 @@
         - [ ] Even given emojis based on severity, status, project,
     - [ ] Background or title given color coded based on severity
 
+
+....
+Converting to Vue + Tailwind for learning.
+this might take a while
+
