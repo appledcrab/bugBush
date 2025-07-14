@@ -5,6 +5,7 @@ from database import init_db,get_all_bugs, add_bug, update_bug, delete_bug
 
 import sqlite3
 import os
+import traceback
 
 app = Flask(__name__)
 
@@ -28,6 +29,7 @@ def api_add_bug():
         bug_id = add_bug(
         title = bug['title'],
         description= bug.get('description',''),
+        emoji= bug.get('emoji','🐞'),
         status= bug.get('status','Open'),
         severity= bug.get('severity','Medium'),
         solution= bug.get('solution','')
@@ -36,7 +38,9 @@ def api_add_bug():
         return jsonify({'status': 'success add', 'bug_id': bug_id})
     
     except Exception as e:
-        print(f"Unexpected Error occured: {e}")
+        print("❌ Error occurred while adding bug:")
+        traceback.print_exc()  # <== This prints full error details!
+        return jsonify({'status': 'error', 'message': str(e)}), 500
 
 # upadting bug given its bugID
 @app.route('/api/bugs/<int:bug_id>', methods=['PUT'])
@@ -47,6 +51,7 @@ def api_update_bug(bug_id):
             bug_id=bug_id,
             title = bug_update['title'],
             description= bug_update.get('description',''),
+            emoji= bug_update.get('emoji','🐞'),
             status= bug_update.get('status','Open'),
             severity= bug_update.get('severity','Medium'),
             solution= bug_update.get('solution','')

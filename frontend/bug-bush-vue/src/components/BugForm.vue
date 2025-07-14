@@ -2,31 +2,31 @@
   <h1 class="text-dark text-3xl font-bold" > Add Bug </h1>
   <div class="flex flex-row justify-center p-4 ">
     
-    <form @submit.prevent="submitBug" class="z-1 bg-light p-4 rounded-md shadow mb-6 flex flex-col gap-4 w-full min-w-sm max-w-4xl border-3 border-dashed border-dark">
+    <form @submit.prevent="submitBug" class="z-1 bg-light p-4 rounded-md shadow-2xl mb-6 flex flex-col gap-4 w-full min-w-sm max-w-4xl border-3 border-dashed border-accent">
       <legend class="font-semibold text-dark">Select Bug Emoji:</legend>
         <div class="flex p-4 flex-row gap-10 justify-center text-3xl border border-primary rounded">
         <label class="emoji-option cursor-pointer flex flex-col items-center">
-          <input type="radio" name="test" value="bug" class="hidden peer" />
+          <input type="radio" name="emoji" value="🐛" class="hidden peer" v-model="emoji"/>
           <p>🐛</p>
         </label>
 
         <label class="emoji-option cursor-pointer flex flex-col items-center">
-          <input type="radio" name="test" value="ant" class="hidden peer" />
+          <input type="radio" name="emoji" value="🐜" class="hidden peer" v-model="emoji"/>
           <p>🐜</p>
         </label>
 
         <label class="emoji-option cursor-pointer flex flex-col items-center">
-          <input type="radio" name="test" value="worm" class="hidden peer" />
+          <input type="radio" name="emoji" value="🪱" class="hidden peer" v-model="emoji"/>
           <p>🪱</p>
         </label>
 
         <label class="emoji-option cursor-pointer flex flex-col items-center">
-          <input type="radio" name="test" value="ladybug" class="hidden peer" />
+          <input type="radio" name="emoji" value="🐞" class="hidden peer" v-model="emoji" />
           <p>🐞</p>
         </label>
 
         <label class="emoji-option cursor-pointer flex flex-col items-center">
-          <input type="radio" name="test" value="beetle" class="hidden peer" />
+          <input type="radio" name="emoji" value="🪲" class="hidden peer" v-model="emoji"/>
           <p>🪲</p>
         </label>
       </div>
@@ -58,7 +58,7 @@
         <label><input type="radio" value="Open" v-model="status" /> Open</label>
         <label><input type="radio" value="Closed" v-model="status" /> Closed</label>
       </div>
-      <button type="submit" class="bg-dark text-white py-2 px-4 rounded hover:bg-green-800 hover:cursor-pointer">Add Bug</button>
+      <button type="submit" class="bg-accent text-dark py-2 px-4 rounded hover:bg-primary hover:cursor-pointer">Add Bug</button>
     </form>
   </div>
   <div class="bush-background"></div>
@@ -73,6 +73,7 @@ const title = ref('')
 const description = ref('')
 const severity = ref('Medium')
 const status = ref('Open')
+const emoji = ref('🐞') // Declare emoji with a default value
 
 const submitBug = async () => {
   await fetch('/api/bugs', {
@@ -80,6 +81,7 @@ const submitBug = async () => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       title: title.value,
+      emoji: emoji.value,
       description: description.value,
       severity: severity.value,
       status: status.value
@@ -91,6 +93,7 @@ const submitBug = async () => {
   description.value = ''
   severity.value = 'Medium'
   status.value = 'Open'
+  emoji.value = '🐞'
 
   emit('bug-added')
 }

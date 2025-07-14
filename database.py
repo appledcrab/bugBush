@@ -69,6 +69,7 @@ def init_db():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title VARCHAR(100) NOT NULL,
             description VARCHAR(255) NOT NULL,
+            emoji TEXT,
             status TEXT DEFAULT 'Open',
             severity TEXT NOT NULL,
             solution VARCHAR(100),
@@ -137,26 +138,26 @@ def get_all_bugs() -> List[Dict] :
 
 # will need to go into more detail of adding a connected project, adding more tags
 # would then also need to then to add an edit 
-def add_bug(title: str, description: str, solution = '', status='Open', severity='Medium') -> int:
+def add_bug(title: str, description: str, emoji='🐞', solution = '', status='Open', severity='Medium') -> int:
     conn = get_db_connection()
     try:
         c = conn.cursor()
-        c.execute("INSERT INTO bugs (title, description, status, severity, solution, created) VALUES (?, ?, ?, ?, ?, date('now'))",
-                (title, description, status, severity, solution))
+        c.execute("INSERT INTO bugs (title, description, emoji, status, severity, solution, created) VALUES (?, ?, ?, ?, ?, ?, date('now'))",
+                (title, description, emoji, status, severity, solution))
         conn.commit()
         return c.lastrowid
     finally:
         conn.close()
 
-def update_bug(bug_id: int, title: str, description: str, solution: str = '', status: str = 'Open', severity: str = 'Medium') -> bool:
+def update_bug(bug_id: int, title: str, description: str, emoji='🐞',solution: str = '', status: str = 'Open', severity: str = 'Medium') -> bool:
     conn = get_db_connection()
     try:
         c = conn.cursor()
         c.execute(
             "UPDATE bugs "
-            "SET title = ?, description = ?, solution = ?, status = ?, severity = ? "
+            "SET title = ?, description = ?, solution = ?, emoji = ?, status = ?, severity = ? "
             "WHERE id = ?",
-            (title, description, solution, status, severity, bug_id)
+            (title, description, solution, emoji, status, severity, bug_id)
         )
         conn.commit()
         return True 
