@@ -34,8 +34,18 @@
 
       <legend class="font-semibold text-dark">Input Bug Name:</legend>
       <input v-model="title" type="text" placeholder="Bug title" required class="text-xl text-dark font-medium text-center p-2 border border-primary rounded" />
+      <legend class="font-semibold text-dark">Input Tags</legend>
+      <div class="border border-primary rounded p-3 flex flex-row gap-10">
+        <div>
+          <input ref="tagText" class="section-item tag-text border border-primary rounded p-2 m-2" type="text" placeholder="ex. Java" autocomplete="off" />
+              <button type="button" class="bg-accent text-dark section-item tag-btn hover:cursor-pointer hover:bg-dark hover:text-accent p-4 rounded-full" @click="addTag">Add tag</button>
+        </div>
+        <div ref="tagsSection" class="flex flex-wrap content-center gap-4">
+
+        </div>
+      </div>
       <legend class="font-semibold text-dark">Input Bug Description:</legend>
-      <textarea v-model="description" rows="4" placeholder="Bug description" class="text-xl p-2 border-dark border border-primary rounded"></textarea>
+      <textarea v-model="description" rows="4" placeholder="Ex. When depositing using the mobile app, double the money is shown in the bank account." class="text-xl p-2 border-dark border border-primary rounded"></textarea>
       
       
       <legend class=" font-semibold text-dark">Severity:</legend>
@@ -58,7 +68,11 @@
         <label><input type="radio" value="Open" v-model="status" /> Open</label>
         <label><input type="radio" value="Closed" v-model="status" /> Closed</label>
       </div>
-      <button type="submit" class="bg-accent text-dark py-2 px-4 rounded hover:bg-primary hover:cursor-pointer">Add Bug</button>
+      <div id="solution-section" class="flex flex-col">
+          <legend class="font-semibold text-dark">Solution:</legend>
+          <textarea v-model="solution" rows="4" placeholder="Ex. Variable added to the account in two different spots. Corrected the code to only add in one spot." class="text-xl p-2 border-dark border border-primary rounded"></textarea>
+      </div>
+      <button type="submit" id="tag-btn" class="bg-accent text-dark py-2 px-4 rounded hover:bg-primary hover:cursor-pointer">Add Bug</button>
     </form>
   </div>
   <div class="bush-background"></div>
@@ -69,11 +83,37 @@ import { ref } from 'vue'
 
 const emit = defineEmits(['bug-added'])
 
+
+// Variables 
 const title = ref('')
 const description = ref('')
 const severity = ref('Medium')
 const status = ref('Open')
-const emoji = ref('🐞') // Declare emoji with a default value
+const emoji = ref('🐞') 
+
+
+let tags = []
+const tagText = ref('')
+const tagsSection = ref('')
+
+const addTag = () => {
+  const text = tagText.value.value.trim()
+  if (text !== '' && !tags.includes(text)) {
+    const newTag = document.createElement('p')
+    newTag.classList.add('tag')
+    tags.push(text)
+    newTag.innerText = text
+    newTag.addEventListener('click', () => {
+      newTag.remove()
+      tags.splice(tags.indexOf(newTag.innerText), 1)
+    })
+    console.log("appending tag")
+    tagsSection.value.appendChild(newTag)
+  } else {
+    alert('Please enter unique text for the tag.')
+  }
+  tagText.value.value = ''
+}
 
 const submitBug = async () => {
   await fetch('/api/bugs', {
@@ -97,4 +137,7 @@ const submitBug = async () => {
 
   emit('bug-added')
 }
+
+
 </script>
+
