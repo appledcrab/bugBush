@@ -1,35 +1,45 @@
 <script setup>
 // import HelloWorld from './components/HelloWorld.vue'
-import {ref,onMounted} from 'vue'
+import {ref,onMounted, computed} from 'vue'
 import BugForm from './components/BugForm.vue'
 import BugList from './components/BugList.vue'
 import Header from './components/Header.vue'
 
-const bugs = ref([])
-const loadBugs = async () =>{
-  const res = await fetch('/api/bugs')
-  console.log(res)
-  bugs.value = await res.json()
+import MainPage from './components/Pages/MainPage.vue'
+import AddBug from './components/Pages/AddBug.vue'
+
+const routes = {
+  '/': MainPage,
+  '/addBug': AddBug
 }
 
-onMounted(loadBugs)
+// const currentPath = ref(window.location.hash)
+
+// window.addEventListener('hashchange', () => {
+//   currentPath.value = window.location.hash
+// })
+
+// const currentView = computed(() => {
+//   return routes[currentPath.value.slice(1) || '/'] || NotFound
+// })
+
+// const bugs = ref([])
+// const loadBugs = async () =>{
+//   const res = await fetch('/api/bugs')
+//   console.log(res)
+//   bugs.value = await res.json()
+// }
+
+// onMounted(loadBugs)
 </script>
 
 <template>
   <Header/>
   <main class=" bg-green-50 min-h-screen -z-1">
     
-    <BugForm @bug-added="loadBugs"/>
-    <BugList :bugs="bugs"/>
-  <!-- <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" /> -->
+    <!-- <BugForm @bug-added="loadBugs"/>
+    <BugList :bugs="bugs"/> --> 
+    <RouterView></RouterView>
   </main>
 </template>
 

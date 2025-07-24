@@ -65,10 +65,10 @@
         <legend class="font-semibold text-dark">Status:</legend>
       <div class="flex p-4 flex-row gap-10 justify-center text-xl border border-primary rounded">
         
-        <label><input type="radio" value="Open" v-model="status" /> Open</label>
-        <label><input type="radio" value="Closed" v-model="status" /> Closed</label>
+        <label><input @change="changeSolutionVisibility" type="radio" value="Open" v-model="status" /> Open</label>
+        <label><input @change="changeSolutionVisibility" type="radio" value="Closed" v-model="status" /> Closed</label>
       </div>
-      <div id="solution-section" class="flex flex-col">
+      <div v-show="isSolutionVisible" ref="solutionSection" id="solution-section" class="flex flex-col">
           <legend class="font-semibold text-dark">Solution:</legend>
           <textarea v-model="solution" rows="4" placeholder="Ex. Variable added to the account in two different spots. Corrected the code to only add in one spot." class="text-xl p-2 border-dark border border-primary rounded"></textarea>
       </div>
@@ -90,12 +90,18 @@ const description = ref('')
 const severity = ref('Medium')
 const status = ref('Open')
 const emoji = ref('🐞') 
-
+const solution = ref('')
+const isSolutionVisible = ref(false)
 
 let tags = []
 const tagText = ref('')
 const tagsSection = ref('')
+const solutionSection = ref('')
 
+
+// adds tag to the tagsSection and adds event listener that will KILL the tag if clicked.
+// Addtionally, makes sure that there is only unique tags added
+// Could change it so it uses a better way of telling them instead of just using default alert.
 const addTag = () => {
   const text = tagText.value.value.trim()
   if (text !== '' && !tags.includes(text)) {
@@ -113,6 +119,12 @@ const addTag = () => {
     alert('Please enter unique text for the tag.')
   }
   tagText.value.value = ''
+}
+
+// Changes based on the form status.
+// closed shows it.
+const changeSolutionVisibility = (event) => {
+  isSolutionVisible.value = event.target.value === 'Closed'
 }
 
 const submitBug = async () => {
@@ -134,6 +146,7 @@ const submitBug = async () => {
   severity.value = 'Medium'
   status.value = 'Open'
   emoji.value = '🐞'
+  tags = []
 
   emit('bug-added')
 }

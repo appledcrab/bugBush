@@ -19,10 +19,12 @@
 #### Overall UI
 - [X] Creating inital ui with python flask
     - [X] Creating base layout showing bugs and very simple button that works on adding bug
-    - [ ] Changing bug input to add: to the ui
+    - [X] Changing bug input to add: to the ui
         - [ ]tags
             - [X] Shown in form
             - [ ] Shown added to list 
+            - [X] Add quick deletion 
+            - [ ] in depth editing ( bug form page but different ?)
         - [ ]project
         - [X]solution if it is a closed bug
         - [X] Editing the bug through UI
@@ -33,12 +35,15 @@
 - [ ] Making a more interactive bug garden that isnt just a list of bugs
     - [ ] Filtering bugs in a list but also able to show bugs as visual bug emojis(?) in different bushes and hover over to show what bug that is
         - [ ] hopefully grouping bugs around similarity by filter (ex. project, tags); The bugs in the same bush more similar?
-- [ ] Possibly adding bug to have permanent specific bug emoji to go along with it (maybe even to be chosen...?)
+- [X] Possibly adding bug to have permanent specific bug emoji to go along with it (maybe even to be chosen...?)
 - [ ] Having a settings page or section that will change how it could operate
     - [ ] Random vs permanent bug emojis?
     - [ ] Changing set of emojis given to bugs
         - [ ] Even given emojis based on severity, status, project,
     - [ ] Background or title given color coded based on severity
+- [ ] Change tag alert to not just use default alert
+- [ ] Adding confirm bug deletion on the quick delete
+- [ ] Reformate quick delete and edit (add) to be on the otherside of the li and use icons
 
 
 ....

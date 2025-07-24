@@ -69,9 +69,10 @@ def api_delete_bug(bug_id):
         delete_bug(
             bug_id=bug_id
         )
+        return jsonify({'status': 'success', 'message': f'Bug with ID {bug_id} deleted successfully'}), 200
     except Exception as e:
         print(f"Unexpected Error occured: {e}")
-
+        return jsonify({'status': 'error', 'message': str(e)}), 500
 
     
 if __name__ == '__main__':
