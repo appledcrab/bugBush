@@ -44,6 +44,8 @@
 - [ ] Change tag alert to not just use default alert
 - [ ] Adding confirm bug deletion on the quick delete
 - [ ] Reformate quick delete and edit (add) to be on the otherside of the li and use icons
+- [ ] Change both add bug and edit but to go back to the bug list after submitting
+- [ ] Potentially optimizing by saving some in session or cookies instead of continuously callling to api each time...?
 
 
 ....

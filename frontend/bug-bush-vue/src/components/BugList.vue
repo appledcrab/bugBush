@@ -1,6 +1,6 @@
 <template>
-  <ul class="space-y-2">
-    <li v-for="bug in bugs" :key="bug.id" class="bg-white border p-3 rounded shadow">
+  <ul class="space-y-2 w-3/4">
+    <li v-for="bug in bugs" :key="bug.id" class="bg-white border p-3 rounded shadow flex justify-between">
       <div>
         <h2 class="font-bold">{{ bug.emoji }} {{ bug.title }} </h2>
         <p class="text-sm text-gray-700">{{ bug.description }}</p>
@@ -13,7 +13,10 @@
         <!-- Edit and quick delete button -->
          <!-- edit will go to page very similar to add bug button that will also have option of deletion -->
         <!-- delete should probably come with a confirm delete and a checkbox to never ask again -> add to todo list -->
+        <RouterLink :to="`/editBug/${bug.id}`"><p>EDIT</p></RouterLink>
+        <!-- edit needs to be fixed -->
         <p @click="deleteBug(bug.id)" class="text-red-500 font-semibold hover:cursor-pointer">DELETE</p>
+        
       </div>
     </li>
   </ul>
