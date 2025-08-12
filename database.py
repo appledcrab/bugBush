@@ -25,18 +25,19 @@ def insert_example():
         ])
 
 
+# need to reexecute 
     c.execute("SELECT COUNT(*) FROM tags")
     if c.fetchone()[0] == 0:
         c.executemany("INSERT INTO tags (tag) VALUES (?)", [
-            ('UI',),
-            ('Backend',),
-            ('Crash',),
-            ('Performance',),
-            ('Learning',),
-            ('SQLite',),
-            ('Python',),
-            ('JavaScript',),
-            ('Java',)
+            ('ui',),
+            ('backend',),
+            ('crash',),
+            ('performance',),
+            ('learning',),
+            ('sqlite',),
+            ('python',),
+            ('javascript',),
+            ('java',)
         ])
     
     conn.commit()
@@ -110,6 +111,8 @@ def get_bug(bug_id: int) -> Optional[Dict] :
         return dict(row) if row else None
     finally:
         conn.close()
+
+# def bug_exists(bug_id)
     
 # Returns all bugs 
 # => returns dictionary of all of the bugs
@@ -186,3 +189,96 @@ def delete_all_bugs():
     finally:
         conn.close()
 
+
+
+# tags table
+
+"""
+getting tag text based on tag id
+returns string of what the tag is
+"""
+def get_tag(tag_id: int):
+    conn = get_db_connection()
+    try:
+        c = conn.cursor()
+        c.execute("SELECT tag FROM tags WHERE id = ?",(tag_id))
+        row = c.fetchone()
+        if not row:
+            raise ValueError(f"Tag with ID {tag_id} does not exist.")
+        return row[1]
+
+    finally:
+        conn.close()
+
+"""
+# given bug id and tag,
+use check and add tag
+# then use that tag id and given bug id to add relationship to tags table
+"""
+def add_tag_bug_relationship(tag_text: str, bug_id: int):
+    conn = get_db_connection()
+    try:
+        tag_id = check_and_add_tag(tag_text=tag_text)
+        # additionally should check that the bug_id exists. get_bug returns a dict of the bug if found
+        bug = get_bug(bug_id=bug_id)
+        if not bug:
+            raise ValueError(f"Bug with ID {bug_id} does not exist.")
+        
+        c = conn.cursor()
+        c.execute("INSERT INTO bugs_tags (bug_id, tag_id) VALUES (?, ?)",(bug_id,tag_id))
+
+    finally:
+        c.close()
+
+"""
+given tag text, check if it exists already in tag table, if not, add it
+return tag id
+
+"""
+def check_and_add_tag(tag_text: str):
+    conn = get_db_connection()
+    try:
+        tag_text = tag_text.lower()
+        # using lower case so UI and ui are the same
+        c = conn.cursor()
+        c.execute("SELECT id FROM tags WHERE tag = ?",(tag_text))
+        row = c.fetchone()
+        if row:
+            return row[0]
+        else:
+            c.execute("INSERT INTO tags (tag) VALUES (?)",(tag_text))
+            conn.commit()
+            return c.lastrowid
+    finally:
+        conn.close()
+"""
+"getting the relationship so it can be accessed - read"
+"needs to go through the relationship, get the tag ids and check them in the tag table"
+
+returns empty array og tags if none found
+"""
+
+
+def get_bug_tags(bug_id:int):
+    conn = get_db_connection()
+    try:
+        c = conn.cursor()
+        c.execute("SELECT tag_id FROM bugs_tags WHERE bug_id = ?",(bug_id))
+        rows = c.fetchall()
+        if not rows:
+            return []
+            # possibility for bug id to not exist in table -> having no bugs
+        
+        # now needs to go through tag table
+        # and adding it to list?
+        tags = []
+        for (tag_id,) in rows:
+            try:
+                tags.append(get_tag(tag_id))
+            except ValueError as e:
+                print(f"Warning: {e}")
+        return tags
+        
+
+    finally:
+        conn.close()
