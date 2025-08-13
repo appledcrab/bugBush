@@ -12,95 +12,107 @@ def get_db_connection():
     return sqlite3.connect(DB_FILE)
 
 # Inserts into tables projects and tags with example ones if they are empty
-def insert_example():
+def insert_example() -> None:
     conn = get_db_connection()
-    c = conn.cursor()
+    try:
+            
+        c = conn.cursor()
 
-    c.execute("SELECT COUNT(*) FROM projects")
-    if c.fetchone()[0] == 0:
-        c.executemany("INSERT INTO projects (title, description) VALUES (?, ?)", [
-            ('Web App', 'A sample frontend-backend project'),
-            ('Game Mod', 'Fun experimental mod'),
-            ('Portfolio Site', 'Personal website project')
-        ])
+        c.execute("SELECT COUNT(*) FROM projects")
+        if c.fetchone()[0] == 0:
+            c.executemany("INSERT INTO projects (title, description) VALUES (?, ?)", [
+                ('Web App', 'A sample frontend-backend project'),
+                ('Game Mod', 'Fun experimental mod'),
+                ('Portfolio Site', 'Personal website project')
+            ])
 
 
-# need to reexecute 
-    c.execute("SELECT COUNT(*) FROM tags")
-    if c.fetchone()[0] == 0:
-        c.executemany("INSERT INTO tags (tag) VALUES (?)", [
-            ('ui',),
-            ('backend',),
-            ('crash',),
-            ('performance',),
-            ('learning',),
-            ('sqlite',),
-            ('python',),
-            ('javascript',),
-            ('java',)
-        ])
-    
-    conn.commit()
+    # need to reexecute 
+        c.execute("SELECT COUNT(*) FROM tags")
+        if c.fetchone()[0] == 0:
+            c.executemany("INSERT INTO tags (tag) VALUES (?)", [
+                ('ui',),
+                ('backend',),
+                ('crash',),
+                ('performance',),
+                ('learning',),
+                ('sqlite',),
+                ('python',),
+                ('javascript',),
+                ('java',)
+            ])
+        
+        conn.commit()
+    except sqlite3.Error as e:
+        print(f"Error with Insert example:{e}")
     conn.close()
 
-def init_db():
+def init_db() -> None:
     conn = get_db_connection()
     # enables foreign key constraints that are for some reason disabled by default
-    conn.execute("PRAGMA foreign_keys = ON")
-    c = conn.cursor()
+    try:
+            
+        conn.execute("PRAGMA foreign_keys = ON")
+        c = conn.cursor()
 
-    # Create tables
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS projects (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title VARCHAR(25) NOT NULL,
-            description VARCHAR(255)
-        )
-    ''')
+        # Create tables
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS projects (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                title VARCHAR(25) NOT NULL,
+                description VARCHAR(255)
+            )
+        ''')
 
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS tags (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            tag VARCHAR(15) NOT NULL UNIQUE
-        )
-    ''')
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS tags (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                tag VARCHAR(15) NOT NULL UNIQUE
+            )
+        ''')
 
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS bugs (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title VARCHAR(100) NOT NULL,
-            description VARCHAR(255) NOT NULL,
-            emoji TEXT,
-            status TEXT DEFAULT 'Open',
-            severity TEXT NOT NULL,
-            solution VARCHAR(100),
-            created DATE
-        )
-    ''')
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS bugs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                title VARCHAR(100) NOT NULL,
+                description VARCHAR(255) NOT NULL,
+                emoji TEXT,
+                status TEXT DEFAULT 'Open',
+                severity TEXT NOT NULL,
+                solution VARCHAR(100),
+                created DATE
+            )
+        ''')
 
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS bugs_tags (
-            bug_id INTEGER NOT NULL REFERENCES bugs(id),
-            tag_id INTEGER NOT NULL REFERENCES tags(id),
-            PRIMARY KEY (bug_id, tag_id)
-        )
-    ''')
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS bugs_tags (
+                bug_id INTEGER NOT NULL REFERENCES bugs(id),
+                tag_id INTEGER NOT NULL REFERENCES tags(id),
+                PRIMARY KEY (bug_id, tag_id)
+            )
+        ''')
 
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS project_bugs (
-            bug_id INTEGER NOT NULL REFERENCES bugs(id),
-            project_id INTEGER NOT NULL REFERENCES projects(id),
-            PRIMARY KEY (bug_id, project_id)
-        )
-    ''')
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS project_bugs (
+                bug_id INTEGER NOT NULL REFERENCES bugs(id),
+                project_id INTEGER NOT NULL REFERENCES projects(id),
+                PRIMARY KEY (bug_id, project_id)
+            )
+        ''')
 
-    insert_example()
+        insert_example()
 
-    conn.commit()
-    conn.close()
+        conn.commit()
+    except sqlite3.Error as e:
+        print(f"Error initalizing DB:{e}")
+    finally:
+        conn.close()
 
-# Selects a single bug from the table given an ID
-# => returns a dictionary of the the specific bug
+"""
+Get Bug
+Given bug id -> returns a Dict of the bug if found
+If not found with bug id -> returns None
+"""
 def get_bug(bug_id: int) -> Optional[Dict] :
     conn = get_db_connection()
     try:
@@ -109,13 +121,16 @@ def get_bug(bug_id: int) -> Optional[Dict] :
         c.execute("SELECT * FROM bugs WHERE id = ?",(bug_id,))
         row = c.fetchone()
         return dict(row) if row else None
+    except sqlite3.Error as e:
+        print(f"Error getting bug with ID {bug_id}")
+        return None
     finally:
         conn.close()
 
-# def bug_exists(bug_id)
-    
-# Returns all bugs 
-# => returns dictionary of all of the bugs
+"""
+Given nothing -> returns dict of all the bugs in the bugs table
+Returns empty [] if error or if none are found
+"""
 def get_all_bugs() -> List[Dict] :
     conn = get_db_connection()
     try:
@@ -123,9 +138,10 @@ def get_all_bugs() -> List[Dict] :
         c = conn.cursor()
         c.execute("SELECT * FROM bugs")
         rows = c.fetchall()
-        # prev issue: dict(rows) would try to turn entire rows into a dict instead of
-        # each row into a dict like we want
-        return [dict(row) for row in rows ]if rows else None
+        return [dict(row) for row in rows ]if rows else []
+    except sqlite3.Error as e:
+        print(f"Error getting all bugs: {e}")
+        return []
     finally:
         conn.close()
 
@@ -133,15 +149,14 @@ def get_all_bugs() -> List[Dict] :
 
 
 # Returns all bugs with specific filters (Project, tags, Open,etc)
+# not done yet....to be done later
 
-
-
+"""
 # Given title, descr, status, and severity, adds bug to the table 
-#  => returns lastrowid / primary key
+#  => returns lastrowid / primary key 
+"""
 
-# will need to go into more detail of adding a connected project, adding more tags
-# would then also need to then to add an edit 
-def add_bug(title: str, description: str, emoji='🐞', solution = '', status='Open', severity='Medium') -> int:
+def add_bug(title: str, description: str, emoji='🐞', solution = '', status='Open', severity='Medium') -> Optional[int]:
     conn = get_db_connection()
     try:
         c = conn.cursor()
@@ -149,9 +164,16 @@ def add_bug(title: str, description: str, emoji='🐞', solution = '', status='O
                 (title, description, emoji, status, severity, solution))
         conn.commit()
         return c.lastrowid
+    except sqlite3.Error as e:
+        print(f"Error adding bug: {e}")
+        return None
     finally:
         conn.close()
 
+"""
+Given bug id, title, description, etc.. updates ID -> returns bool
+True if success, False if there was an error and didn't update
+"""
 def update_bug(bug_id: int, title: str, description: str, emoji='🐞',solution: str = '', status: str = 'Open', severity: str = 'Medium') -> bool:
     conn = get_db_connection()
     try:
@@ -170,29 +192,46 @@ def update_bug(bug_id: int, title: str, description: str, emoji='🐞',solution:
     finally:
         conn.close()
 
-def delete_bug(bug_id: int):
+"""
+Given a bug ID, deletes the bug from the bug table
+Returns bool. True if succeeds, False if fails 
+"""
+def delete_bug(bug_id: int) -> bool:
     conn = get_db_connection()
     try:
         c = conn.cursor()
         c.execute("DELETE FROM bugs WHERE id = ?",(bug_id,))
         conn.commit()
+        return True
+    except sqlite3.Error as e:
+        print(f"Error updating bug with ID:{e}")
+        return False
     finally:
         conn.close()
 
+"""
+Deletes all bugs from the bug table
+Returns Bool (True if succeeds and False if fails)
+Mostly for testing purposes 
+"""
 # Mostly for testing purposes but can be kept as a reset
-def delete_all_bugs():
+def delete_all_bugs()-> bool:
     conn = get_db_connection()
     try:
         c = conn.cursor()
         c.execute("DELETE FROM bugs")
         conn.commit()
+        return True
+    except sqlite3.Error as e:
+        print(f"Error deleting all bugs: {e}")
+        return False
     finally:
         conn.close()
 
 
 
-# tags table
-
+# tags table database commands 
+# REMEMBER CRUD create read update delete;
 """
 getting tag text based on tag id
 returns string of what the tag is
@@ -226,15 +265,28 @@ def add_tag_bug_relationship(tag_text: str, bug_id: int):
         
         c = conn.cursor()
         c.execute("INSERT INTO bugs_tags (bug_id, tag_id) VALUES (?, ?)",(bug_id,tag_id))
-
+        c.commit()
     finally:
         c.close()
 
+
+"""
+removing bug tag relationship by deleting the row, given the bug id and the tag id
+no return
+"""
+def remove_bug_tag_relationship(bug_id:int, tag_id:int):
+    conn = get_db_connection()
+    try:
+        c = conn.cursor()
+        c.execute("DELETE FROM bugs_tags WHERE bug_id = ? AND tag_id = ?",(bug_id,tag_id))
+        c.commit()
+    finally:
+        conn.close()
 """
 given tag text, check if it exists already in tag table, if not, add it
 return tag id
-
-"""
+CREATE 
+"""  
 def check_and_add_tag(tag_text: str):
     conn = get_db_connection()
     try:
@@ -251,11 +303,46 @@ def check_and_add_tag(tag_text: str):
             return c.lastrowid
     finally:
         conn.close()
+    
+"""
+getting an individual tag text tgiven its id
+unsre when this woud be use as of now
+Read - indiviual 
+"""
+def get_tag(tag_id: int):
+    conn = get_db_connection()
+    try:
+        c = conn.cursor()
+        c.exeute("SELECT * FROM tags WHERE id = ?",(tag_id))
+        row = c.fetchone
+        if row:
+            return row
+    finally:
+        conn.close()
+
+"""
+getting all tags from the tags table
+returning.... list or dictionary version of it. not sure. 
+no input needed
+Read - all 
+"""
+
+def get_all_tags():
+    conn = get_db_connection()
+    try:
+        c = conn.cursor()
+        c.execute("SELECT * FROM tags")
+        rows = c.fetchall()
+        return rows
+    finally:
+        conn.close()
+
 """
 "getting the relationship so it can be accessed - read"
 "needs to go through the relationship, get the tag ids and check them in the tag table"
 
 returns empty array og tags if none found
+Read - for each bug 
 """
 
 
@@ -282,3 +369,117 @@ def get_bug_tags(bug_id:int):
 
     finally:
         conn.close()
+
+"""
+For testing purposes: deleting all tags
+"""
+def delete_all_tags():
+    conn = get_db_connection()
+    try:
+        c = conn.cursor()
+        c.execute("DELETE * FROM tags")
+        c.commit()
+    finally:
+        conn.close()
+
+
+
+
+"""
+Creating project given req title and optional description
+"""
+
+def create_project(title: str, description = ""):
+    conn = get_db_connection()
+    try:
+        c = conn.cursor()
+        c.execute("INSERT INTO projects (title, description) VALUES (?,?)",(title, description))
+        c.commit()
+        return c.lastrowid
+    finally:
+        conn.close()
+
+"""
+Updating project
+"""
+def update_project(project_id:int, title:str, description = ""):
+    conn = get_db_connection()
+    try:
+        c = conn.cursor()
+        c.execute("UPDATE projects " \
+        "SET title = ?, description = ?" \
+        "WHERE id=?",(title,description,project_id))
+        conn.commit()
+        return True
+    except sqlite3.Error as e:
+        print(f"Database Error: {e}")
+        return False
+    finally:
+        conn.close()
+
+"""
+Reading project
+getting information from project given project id (returning title and description)
+"""
+def get_project(project_id:int):
+    conn = get_db_connection()
+    try:
+        c = conn.cursor()
+        c.execute("SELECT * FROM projects WHERE id = ?",(project_id))
+        row = c.fetchone()
+        if row: return row
+    finally:
+        conn.close()
+
+"""
+Deleting project
+"""
+def delete_project(project_id):
+    conn = get_db_connection()
+    try:
+        c = conn.cursor()
+        c.execute("DELETE FROM projects WHERE id = ?",(project_id))
+        conn.commit()
+        return True
+    except sqlite3.DatabaseError:
+        return False
+    finally:
+        conn.close()
+
+"""
+Testing pruposes: deleting all projects
+"""
+def delete_all_projects():
+    conn = get_db_connection()
+    try:
+        c = conn.cursor()
+        c.execute("DELETE FROM projects")
+        conn.commit()
+    finally:
+        conn.close()
+
+
+"""
+Adding bug to project (relation)
+given bug id and project id
+returning true or false for if it worked or not.
+"""
+def add_bug_project_rel(bug_id:int,proj_id:int)-> bool: 
+    conn = get_db_connection()
+    try:
+        c = conn.cursor()
+        c.execute("INSERT INTO project_bugs (bug_id, project_id) VALUES (?,?)",(bug_id,proj_id))
+        conn.commit()
+        return True
+    except sqlite3.DatabaseError:
+        return False
+    finally:
+        conn.close()
+
+
+"""
+Edits:
+Adding project database commands
+making type hints and return types more consistent 
+And adding more documentation to the database functions
+"""
