@@ -1,0 +1,88 @@
+  @import "tailwindcss";
+
+  @theme {
+      --color-dark: #325c2a;
+      --color-mid: #839256;
+      --color-primary: #75b465;
+      --color-light: #d1e5b6;
+      --color-accent: #FFCF50;
+      --color-text: #FEFAE0;
+
+      --color-brown: #6C584C;
+      --color-brown-light: #8B6E5A;
+  }
+
+:root{
+    --main-dark-green: #3a6845;
+}
+
+.edit_title{
+  font-size: 1.5em;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #eef5ec;
+  margin: 0;
+  /* padding: 2rem; */
+  color: #333;
+}
+
+
+
+h1 {
+  text-align: center;
+  /* color: var(--main-dark-green); */
+}
+
+/* =========================================== */
+/* Form emojis */
+.emoji-option {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.emoji-option input[type="radio"] {
+  display: none;
+}
+
+.emoji-option p {
+  padding: 0.25rem; 
+  border-radius: 0.25rem; 
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1); 
+}
+
+.emoji-option input[type="radio"]:checked + p {
+  border: 1px solid var(--color-dark); 
+  transform: scale(1.75); 
+}
+/* ================================================= */
+
+/* Background for the bush - used for bug form */
+
+.bush-background {
+  background-image: url('./assets/bush.svg'); 
+  background-repeat: repeat-x;
+  background-position: bottom;
+  background-size: auto 105%; /* or contain, depending on how tall it is */
+  height: 50em;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  z-index: 0;
+}
+
+.tag{
+  background-color: var(--color-primary);
+  color: var(--color-text);
+  padding: 10px;
+  border-radius: 20px;
+}
+
+.tag:hover{
+  cursor: pointer;
+  background-color: var(--color-accent);
+  color: var(--color-dark);
+}
